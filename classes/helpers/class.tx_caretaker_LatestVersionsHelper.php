@@ -58,8 +58,16 @@ class tx_caretaker_LatestVersionsHelper {
 		foreach($releases as $major => $details) {
 			if (is_array($details) && !empty($details['latest'])) {
 				$max[$major] = $details['latest'];
+				
+				foreach ($details["releases"] as $key => $value) {
+					if ($details["releases"][$key]["type"] === "security") {
+						$security[$major] = $details["releases"][$key]["version"];
+						break;
+					}
+				}
+
 			}
-			
+
 			if (is_array($details) && !empty($details['stable'])) {
 				$stable[$major] = $details['stable'];
 			}
@@ -67,6 +75,7 @@ class tx_caretaker_LatestVersionsHelper {
 		}
 		t3lib_div::makeInstance('t3lib_Registry')->set('tx_caretaker', 'TYPO3versions', $max);
 		t3lib_div::makeInstance('t3lib_Registry')->set('tx_caretaker', 'TYPO3versionsStable', $stable);
+		t3lib_div::makeInstance('t3lib_Registry')->set('tx_caretaker', 'TYPO3versionsSecurity', $security);
 		return TRUE;
 	}
 
